@@ -4,7 +4,7 @@ class Car {
     this.y = y;
     this.width = width;
     this.height = height;
-    this.controls = new Controls();
+
     this.speed = 0;
     this.acceleration = 0.2;
     this.maxSpeed = 3;
@@ -12,6 +12,11 @@ class Car {
     this.friction = 0.05;
     // Turn angle
     this.angle = 0;
+
+    // Instantiate sensor
+    this.sensor = new Sensor(this); // passing car
+
+    this.controls = new Controls();
   }
 
   #move() {
@@ -79,6 +84,8 @@ class Car {
    */
   update() {
     this.#move();
+    // update the sensor
+    this.sensor.update();
   }
 
   /**
@@ -102,5 +109,7 @@ class Car {
     ctx.fill();
     // Restore the canvas to the pre translated/rotated state
     ctx.restore();
+    // draw the sensor for the car
+    this.sensor.draw(ctx);
   }
 }
