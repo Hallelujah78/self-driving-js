@@ -50,3 +50,36 @@ function getIntersection(A, B, C, D) {
 
   return null;
 }
+
+/**
+ *
+ *
+ * @param {*} poly1 - a polygon
+ * @param {*} poly2 - a polygon
+ * @return {boolean} - true if intersect, false otherwise
+ */
+function polysIntersect(poly1, poly2) {
+  // [a, b, c, d] - a-b, b-c, c-d, d-a
+
+  // For every point in poly1
+  for (let i = 0; i < poly1.length; i++) {
+    // For every point in poly2
+    for (let j = 0; j < poly2.length; j++) {
+      const touch = getIntersection(
+        poly1[i],
+        poly1[(i + 1) % poly1.length],
+        poly2[j],
+        poly2[(j + 1) % poly2.length],
+      );
+      if (touch) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+/*
+  poly1[(i + 1) % poly1.length],
+  1%4 = 1, 2%4 = 2, 3%4 = 3, 4%4=0
+*/

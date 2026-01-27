@@ -12,7 +12,8 @@ class Car {
     this.friction = 0.05;
     // Turn angle
     this.angle = 0;
-
+    // Is the car damaged
+    this.damaged = false;
     // Instantiate sensor
     this.sensor = new Sensor(this); // passing car
 
@@ -83,9 +84,49 @@ class Car {
    * @memberof Car
    */
   update(roadBorders) {
-    this.#move();
-    // update the sensor
-    this.sensor.update(roadBorders);
+    if (!this.damaged) {
+      this.#move();
+      this.polygon = this.#createPolygon();
+      this.damaged = this.#assessDamage(roadBorders);
+      // update the sensor
+      this.sensor.update(roadBorders);
+    }
+  }
+
+  #assessDamage(roadBorders) {
+    // For every road border
+    for (let i = 0; i < roadBorders.length; i++) {
+      if (polysIntersect(this.polygon, roadBorders[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  #createPolygon() {
+    const points = [];
+    // get the length of the hypot - distance from center of rect to any corner
+    const radius = Math.hypot(this.width / 2, this.height / 2);
+    // get the angle between the y axis and the top right corner of our rectangle (car)
+    const alpha = Math.atan2(this.width, this.height);
+
+    points.push({
+      x: this.x - Math.sin(this.angle - alpha) * radius,
+      y: this.y - Math.cos(this.angle - alpha) * radius,
+    });
+    points.push({
+      x: this.x - Math.sin(this.angle + alpha) * radius,
+      y: this.y - Math.cos(this.angle + alpha) * radius,
+    });
+    points.push({
+      x: this.x - Math.sin(Math.PI + this.angle - alpha) * radius,
+      y: this.y - Math.cos(Math.PI + this.angle - alpha) * radius,
+    });
+    points.push({
+      x: this.x - Math.sin(Math.PI + this.angle + alpha) * radius,
+      y: this.y - Math.cos(Math.PI + this.angle + alpha) * radius,
+    });
+    return points;
   }
 
   /**
@@ -95,6 +136,24 @@ class Car {
    * @memberof Car
    */
   draw(ctx) {
+    // If car is damaged, color it gray
+    if (this.damaged) {
+      ctx.fillStyle = "gray";
+    } else {
+      // Otherwise color it black
+      ctx.fillStyle = "black";
+    }
+    ctx.beginPath();
+    ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
+    for (let i = 1; i < this.polygon.length; i++) {
+      ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
+    }
+    ctx.fill();
+    // draw the sensor for the car
+    this.sensor.draw(ctx);
+  }
+
+  drawOld() {
     // Save canvas state before translation/rotation
     ctx.save();
     // Move the 'pen' to x,y
