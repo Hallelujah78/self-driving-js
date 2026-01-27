@@ -82,10 +82,10 @@ class Car {
    *
    * @memberof Car
    */
-  update() {
+  update(roadBorders) {
     this.#move();
     // update the sensor
-    this.sensor.update();
+    this.sensor.update(roadBorders);
   }
 
   /**

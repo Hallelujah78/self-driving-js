@@ -19,7 +19,8 @@ animate();
  */
 function animate() {
   // Update the position of the car
-  car.update();
+  // By passing road.borders, car sensor can detect intersection of sensor ray with road border
+  car.update(road.borders);
   /* Set the canvas height - allows window
    * resizing. Setting the height clears all
    * drawings on the canvas.
