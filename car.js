@@ -1,5 +1,5 @@
 class Car {
-  constructor(x, y, width, height) {
+  constructor(x, y, width, height, controlType, maxSpeed = 3) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -7,17 +7,21 @@ class Car {
 
     this.speed = 0;
     this.acceleration = 0.2;
-    this.maxSpeed = 3;
+    this.maxSpeed = maxSpeed;
     // Friction halts the car when in motion but neither forward or reverse controls are active
     this.friction = 0.05;
     // Turn angle
     this.angle = 0;
     // Is the car damaged
     this.damaged = false;
-    // Instantiate sensor
-    this.sensor = new Sensor(this); // passing car
+    // Control type
+    this.controlType = controlType;
 
-    this.controls = new Controls();
+    if (controlType === "KEYS") {
+      // Instantiate sensor
+      this.sensor = new Sensor(this); // passing car
+    }
+    this.controls = new Controls(this.controlType);
   }
 
   #move() {
@@ -88,8 +92,10 @@ class Car {
       this.#move();
       this.polygon = this.#createPolygon();
       this.damaged = this.#assessDamage(roadBorders);
-      // update the sensor
-      this.sensor.update(roadBorders);
+      if (this.sensor) {
+        // update the sensor
+        this.sensor.update(roadBorders);
+      }
     }
   }
 
@@ -150,7 +156,7 @@ class Car {
     }
     ctx.fill();
     // draw the sensor for the car
-    this.sensor.draw(ctx);
+    if (this.sensor) this.sensor.draw(ctx);
   }
 
   drawOld() {

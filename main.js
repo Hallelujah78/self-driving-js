@@ -7,7 +7,10 @@ const ctx = canvas.getContext("2d");
 
 const road = new Road(canvas.width / 2, canvas.width * 0.9);
 
-const car = new Car(road.getLaneCenter(1), 300, 30, 50);
+// Add another car
+const traffic = [new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2)];
+
+const car = new Car(road.getLaneCenter(1), 300, 30, 50, "KEYS");
 
 // Custom animate function
 animate();
@@ -18,6 +21,11 @@ animate();
  *
  */
 function animate() {
+  // Animate the traffic cars
+  for (let i = 0; i < traffic.length; i++) {
+    traffic[i].update(road.borders);
+  }
+
   // Update the position of the car
   // By passing road.borders, car sensor can detect intersection of sensor ray with road border
   car.update(road.borders);
@@ -37,6 +45,12 @@ function animate() {
 
   // Draw the road
   road.draw(ctx);
+
+  // Draw the traffic
+  for (let i = 0; i < traffic.length; i++) {
+    traffic[i].draw(ctx);
+  }
+
   // Draw the car at the updated position
   car.draw(ctx);
 
