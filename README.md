@@ -23,3 +23,24 @@ One-sentence takeaway:
 Blue says: “Angle 0 means up.”
 Orange says: “Angle 0 means right.”
 Canvas says: “Also… Y is upside down.” 😄
+
+## getReading, getIntersection, polysIntersect
+
+- getIntersection takes 4 points: A, B, C, D `{x,y}`
+  - returns intersection x,y,offset or null if none
+  - segments are: A-B, C-D
+
+- polysIntersect
+  - takes 2 arrays of points: [{x,y},{x,y},{x,y}],[{x,y},{x,y},{x,y}]
+  - uses getIntersection to detect touches
+    returns true/false
+
+- getReading
+  - takes a ray and an array of segments
+  - ray: [{x,y}, {x,y}] - start and end point of ray
+  - segments: [[{x,y}, {x,y}], [{x,y}, {x,y}], [{x,y}, {x,y}]] - array containing arrays where each subarray holds 2 points, the start and end of the line segment
+  - returns null or the point nearest the car where the ray intersects with another line segment
+
+- We want to update this.readings in sensor when the ray intersects with a line segment of the polygon of another car
+  - we could construct an array of segments from `this.polygon`
+  - we then pass these segments to getReading

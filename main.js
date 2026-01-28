@@ -8,9 +8,11 @@ const ctx = canvas.getContext("2d");
 const road = new Road(canvas.width / 2, canvas.width * 0.9);
 
 // Add another car
-const traffic = [new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2)];
+const traffic = [
+  new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2, "red"),
+];
 
-const car = new Car(road.getLaneCenter(1), 300, 30, 50, "KEYS");
+const car = new Car(road.getLaneCenter(1), 300, 30, 50, "KEYS", 3, "blue");
 
 // Custom animate function
 animate();
@@ -23,12 +25,14 @@ animate();
 function animate() {
   // Animate the traffic cars
   for (let i = 0; i < traffic.length; i++) {
-    traffic[i].update(road.borders);
+    // Pass empty array - traffic cannot interact with itself
+    traffic[i].update(road.borders, []);
   }
 
   // Update the position of the car
   // By passing road.borders, car sensor can detect intersection of sensor ray with road border
-  car.update(road.borders);
+  // By passing traffic, car/sensor can interact with other cars
+  car.update(road.borders, traffic);
   /* Set the canvas height - allows window
    * resizing. Setting the height clears all
    * drawings on the canvas.

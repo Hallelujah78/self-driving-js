@@ -1,9 +1,9 @@
 class Sensor {
   constructor(car) {
     this.car = car;
-    this.rayCount = 3; // a ray is a beam sent out by a 'sensor'
-    this.rayLength = 100; // sensor "range"
-    this.raySpread = Math.PI / 4; // 45deg
+    this.rayCount = 5; // a ray is a beam sent out by a 'sensor'
+    this.rayLength = 200; // sensor "range"
+    this.raySpread = Math.PI / 2; // 45deg
     this.rays = [];
     this.readings = []; // readings from sensors
   }
@@ -40,7 +40,7 @@ class Sensor {
    * @param {*} roadBorders
    * @memberof Sensor
    */
-  #getReading(ray, roadBorders) {
+  #getReading(ray, segments, traffic) {
     /* a ray may 'touch' or intersect with multiple objects. It may intersect with multiple segments of another car and one or more road borders.
     We keep the intersection or touch that is closest to the sensor as it is the most relevant.
     */
@@ -49,16 +49,34 @@ class Sensor {
     let touches = [];
 
     // For each road border
-    for (let i = 0; i < roadBorders.length; i++) {
+    for (let i = 0; i < segments.length; i++) {
       // getIntersection returns x, y, offset (dist from rayStart)
+
       const touch = getIntersection(
         ray[0],
         ray[1],
-        roadBorders[i][0],
-        roadBorders[i][1],
+        segments[i][0],
+        segments[i][1],
       );
       if (touch) {
         touches.push(touch);
+      }
+    }
+
+    // For each car in traffic
+    for (let i = 0; i < traffic.length; i++) {
+      const poly = traffic[i].polygon;
+      // For each point in poly
+      for (let j = 0; j < poly.length; j++) {
+        const touch = getIntersection(
+          ray[0],
+          ray[1],
+          poly[j],
+          poly[(j + 1) % poly.length],
+        );
+        if (touch) {
+          touches.push(touch);
+        }
       }
     }
 
@@ -81,13 +99,13 @@ class Sensor {
    * @param {*} roadBorders
    * @memberof Sensor
    */
-  update(roadBorders) {
+  update(roadBorders, traffic) {
     this.#castRays();
     // Reset the readings
     this.readings = [];
     // For each ray
     for (let i = 0; i < this.rays.length; i++) {
-      this.readings.push(this.#getReading(this.rays[i], roadBorders));
+      this.readings.push(this.#getReading(this.rays[i], roadBorders, traffic));
     }
   }
 

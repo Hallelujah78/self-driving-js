@@ -1,5 +1,5 @@
 class Car {
-  constructor(x, y, width, height, controlType, maxSpeed = 3) {
+  constructor(x, y, width, height, controlType, maxSpeed = 3, color) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -8,6 +8,7 @@ class Car {
     this.speed = 0;
     this.acceleration = 0.2;
     this.maxSpeed = maxSpeed;
+    this.color = color;
     // Friction halts the car when in motion but neither forward or reverse controls are active
     this.friction = 0.05;
     // Turn angle
@@ -87,22 +88,27 @@ class Car {
    *
    * @memberof Car
    */
-  update(roadBorders) {
+  update(roadBorders, traffic) {
     if (!this.damaged) {
       this.#move();
       this.polygon = this.#createPolygon();
-      this.damaged = this.#assessDamage(roadBorders);
+      this.damaged = this.#assessDamage(roadBorders, traffic);
       if (this.sensor) {
         // update the sensor
-        this.sensor.update(roadBorders);
+        this.sensor.update(roadBorders, traffic);
       }
     }
   }
 
-  #assessDamage(roadBorders) {
+  #assessDamage(roadBorders, traffic) {
     // For every road border
     for (let i = 0; i < roadBorders.length; i++) {
       if (polysIntersect(this.polygon, roadBorders[i])) {
+        return true;
+      }
+    }
+    for (let i = 0; i < traffic.length; i++) {
+      if (polysIntersect(this.polygon, traffic[i].polygon)) {
         return true;
       }
     }
@@ -117,18 +123,22 @@ class Car {
     const alpha = Math.atan2(this.width, this.height);
 
     points.push({
+      // Bottom left
       x: this.x - Math.sin(this.angle - alpha) * radius,
       y: this.y - Math.cos(this.angle - alpha) * radius,
     });
     points.push({
+      // Bottom right
       x: this.x - Math.sin(this.angle + alpha) * radius,
       y: this.y - Math.cos(this.angle + alpha) * radius,
     });
     points.push({
+      // Top right
       x: this.x - Math.sin(Math.PI + this.angle - alpha) * radius,
       y: this.y - Math.cos(Math.PI + this.angle - alpha) * radius,
     });
     points.push({
+      // Top left
       x: this.x - Math.sin(Math.PI + this.angle + alpha) * radius,
       y: this.y - Math.cos(Math.PI + this.angle + alpha) * radius,
     });
@@ -147,7 +157,7 @@ class Car {
       ctx.fillStyle = "gray";
     } else {
       // Otherwise color it black
-      ctx.fillStyle = "black";
+      ctx.fillStyle = this.color;
     }
     ctx.beginPath();
     ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
@@ -155,7 +165,7 @@ class Car {
       ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
     }
     ctx.fill();
-    // draw the sensor for the car
+    // draw the sensor for the car if it exists
     if (this.sensor) this.sensor.draw(ctx);
   }
 
