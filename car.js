@@ -21,6 +21,11 @@ class Car {
     if (controlType === "KEYS") {
       // Instantiate sensor
       this.sensor = new Sensor(this); // passing car
+      // Add the AI
+      this.brain = new NeuralNetwork(
+        // input layer is the number of sensors
+        [this.sensor.rayCount, 6, 4], // 6 in hidden layer, 4 = output layer
+      );
     }
     this.controls = new Controls(this.controlType);
   }
@@ -96,6 +101,14 @@ class Car {
       if (this.sensor) {
         // update the sensor
         this.sensor.update(roadBorders, traffic);
+        // get the offsets from sensor readings (inputs to neural network)
+        const offsets = this.sensor.readings.map((reading) =>
+          // 1-reading.offset : neuron receives low value if object far away
+          reading ? 1 - reading.offset : 0,
+        );
+        // use feedforward to set values in network
+        const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+        console.log(outputs);
       }
     }
   }
