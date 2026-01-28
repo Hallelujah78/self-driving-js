@@ -1,24 +1,31 @@
 <!DOCTYPE html>
-<htm lang="en">
+<html lang="en">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self-Driving Car Example</title>
-    <link rel="stylesheet" href="styles.css">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Driving Car Example</title>
+  <link rel="stylesheet" href="styles.css">
 
-  </head>
+</head>
 
-  <body>
-    <canvas id="myCanvas"></canvas>
-  </body>
-  <script src="network.js"></script>
-  <script src="sensor.js"></script>
-  <script src="utils.js"></script>
-  <script src="road.js"></script>
-  <script src="controls.js"></script>
-  <script src="car.js"></script>
-  <script src="main.js"></script>
+<body>
+  <canvas id="carCanvas"></canvas>
+  <div id="verticalButtons">
+    <button id="saveBtn">🗃️</button>
+    <button id="discardBtn">🗑️</button>
+
+  </div>
+  <canvas id="networkCanvas"></canvas>
+</body>
+<script src="visualizer.js"></script>
+<script src="network.js"></script>
+<script src="sensor.js"></script>
+<script src="utils.js"></script>
+<script src="road.js"></script>
+<script src="controls.js"></script>
+<script src="car.js"></script>
+<script src="main.js"></script>
 
 
-  </html>
+</html>

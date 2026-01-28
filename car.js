@@ -1,5 +1,6 @@
 class Car {
   constructor(x, y, width, height, controlType, maxSpeed = 3, color) {
+    this.startY = y;
     this.x = x;
     this.y = y;
     this.width = width;
@@ -19,6 +20,11 @@ class Car {
     this.useBrain = controlType == "AI";
     // Control type
     this.controlType = controlType;
+
+    // Fitness data
+    this.framesAlive = 0;
+    this.totalSpeed = 0;
+    this.fitness = 0;
 
     if (controlType !== "DUMMY") {
       // Instantiate sensor
@@ -118,6 +124,8 @@ class Car {
           this.controls.reverse = outputs[3];
         }
       }
+      this.framesAlive++;
+      this.totalSpeed += this.speed;
     }
   }
 
@@ -172,7 +180,7 @@ class Car {
    * @param {CanvasRenderingContext2D} ctx
    * @memberof Car
    */
-  draw(ctx) {
+  draw(ctx, drawSensor = false) {
     // If car is damaged, color it gray
     if (this.damaged) {
       ctx.fillStyle = "gray";
@@ -187,25 +195,25 @@ class Car {
     }
     ctx.fill();
     // draw the sensor for the car if it exists
-    if (this.sensor) this.sensor.draw(ctx);
+    if (this.sensor && drawSensor) this.sensor.draw(ctx);
   }
 
   drawOld() {
     // Save canvas state before translation/rotation
-    ctx.save();
+    carCtx.save();
     // Move the 'pen' to x,y
-    ctx.translate(this.x, this.y);
+    carCtx.translate(this.x, this.y);
     // Rotate the entire canvas by -this.angle
-    ctx.rotate(-this.angle);
+    carCtx.rotate(-this.angle);
 
     // Draw the object
-    ctx.beginPath();
+    carCtx.beginPath();
     // Draw the rect centered at x,y
-    ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-    ctx.fill();
+    carCtx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
+    carCtx.fill();
     // Restore the canvas to the pre translated/rotated state
-    ctx.restore();
+    carCtx.restore();
     // draw the sensor for the car
-    this.sensor.draw(ctx);
+    this.sensor.draw(carCtx);
   }
 }
