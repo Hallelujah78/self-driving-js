@@ -15,10 +15,12 @@ class Car {
     this.angle = 0;
     // Is the car damaged
     this.damaged = false;
+    // use brain if control type is AI
+    this.useBrain = controlType == "AI";
     // Control type
     this.controlType = controlType;
 
-    if (controlType === "KEYS") {
+    if (controlType !== "DUMMY") {
       // Instantiate sensor
       this.sensor = new Sensor(this); // passing car
       // Add the AI
@@ -108,7 +110,13 @@ class Car {
         );
         // use feedforward to set values in network
         const outputs = NeuralNetwork.feedForward(offsets, this.brain);
-        console.log(outputs);
+
+        if (this.useBrain) {
+          this.controls.forward = outputs[0];
+          this.controls.left = outputs[1];
+          this.controls.right = outputs[2];
+          this.controls.reverse = outputs[3];
+        }
       }
     }
   }

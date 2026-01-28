@@ -12,7 +12,7 @@ const traffic = [
   new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2, "red"),
 ];
 
-const car = new Car(road.getLaneCenter(1), 300, 30, 50, "KEYS", 3, "blue");
+const car = new Car(road.getLaneCenter(1), 300, 30, 50, "AI", 3, "blue");
 
 // Custom animate function
 animate();
