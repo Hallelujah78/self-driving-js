@@ -88,3 +88,12 @@ Canvas says: “Also… Y is upside down.” 😄
   - our input layer does use partial firing
 - in a scientific model - hidden layer neurons can partially fire
 - the output values are typically binary - for on/off or yes/no answers
+
+# Model can't avoid additional car
+
+- My AI car could navigate 12 cars but when I added a 13th, it ran into the back of it.
+- I asked ChatGPT: https://chatgpt.com/c/697b31f1-9cf8-8326-ba13-d7c15a94f36c
+- I added more sensors (inputs), 7 up from 5. They cover 180 degrees instead of 45 degrees.
+- I added more neurons in the hidden layer - 20 up from 6
+- This seems to have fixed obstacle detection and avoidance - it could avoid the 14th car.
+- This simple FNN with discrete neurons can't really learn to 'drive' but it can avoid obstacles now!

@@ -23,6 +23,23 @@ class NeuralNetwork {
     }
     return outputs; // final outputs, eg left, right, forward, reverse
   }
+
+  static mutate(network, amount = 1) {
+    for (const level of network.levels) {
+      for (let i = 0; i < level.biases.length; i++) {
+        level.biases[i] = lerp(level.biases[i], Math.random() * 2 - 1, amount);
+      }
+      for (let i = 0; i < level.weights.length; i++) {
+        for (let j = 0; j < level.weights[i]; j++) {
+          level.weights[i][j] = lerp(
+            level.weights[i][j],
+            Math.random() * 2 - 1,
+            amount,
+          );
+        }
+      }
+    }
+  }
 }
 
 class Level {

@@ -17,11 +17,17 @@ const traffic = [
   new Car(road.getLaneCenter(2), -600, 30, 50, "DUMMY", 2, "purple"),
   new Car(road.getLaneCenter(1), -750, 30, 50, "DUMMY", 2, "red"),
   new Car(road.getLaneCenter(0), -900, 30, 50, "DUMMY", 2, "green"),
-  new Car(road.getLaneCenter(1), -1020, 30, 50, "DUMMY", 2, "red"),
+  new Car(road.getLaneCenter(1), -1050, 30, 50, "DUMMY", 2, "red"),
   new Car(road.getLaneCenter(2), -1150, 30, 50, "DUMMY", 2, "purple"),
+  new Car(road.getLaneCenter(2), -1300, 30, 50, "DUMMY", 2, "red"),
+  new Car(road.getLaneCenter(1), -1450, 30, 50, "DUMMY", 2, "green"),
+  new Car(road.getLaneCenter(0), -1590, 30, 50, "DUMMY", 2, "red"),
+  new Car(road.getLaneCenter(1), -1740, 30, 50, "DUMMY", 2, "purple"),
+  new Car(road.getLaneCenter(1), -2000, 30, 50, "DUMMY", 2, "purple"),
+  new Car(road.getLaneCenter(1), -2200, 30, 50, "DUMMY", 2, "purple"),
 ];
 
-const N = 200;
+const N = 2000;
 
 const cars = generateCars(N);
 
@@ -29,7 +35,11 @@ const cars = generateCars(N);
 let bestCar = cars[0];
 
 if (localStorage.getItem("bestBrain")) {
-  bestCar.brain = JSON.parse(localStorage.getItem("bestBrain"));
+  // For all cars
+  for (let i = 0; i < cars.length; i++) {
+    cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
+    NeuralNetwork.mutate(cars[i].brain, 0);
+  }
 }
 
 // Custom animate function

@@ -1,9 +1,9 @@
 class Sensor {
   constructor(car) {
     this.car = car;
-    this.rayCount = 5; // a ray is a beam sent out by a 'sensor'
+    this.rayCount = 7; // a ray is a beam sent out by a 'sensor'
     this.rayLength = 200; // sensor "range"
-    this.raySpread = Math.PI / 2; // 45deg
+    this.raySpread = Math.PI; // 45deg
     this.rays = [];
     this.readings = []; // readings from sensors
   }

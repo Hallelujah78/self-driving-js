@@ -32,7 +32,7 @@ class Car {
       // Add the AI
       this.brain = new NeuralNetwork(
         // input layer is the number of sensors
-        [this.sensor.rayCount, 6, 4], // 6 in hidden layer, 4 = output layer
+        [this.sensor.rayCount, 20, 4], // 6 in hidden layer, 4 = output layer
       );
     }
     this.controls = new Controls(this.controlType);
