@@ -3,7 +3,7 @@ class Sensor {
     this.car = car;
     this.rayCount = 7; // a ray is a beam sent out by a 'sensor'
     this.rayLength = 200; // sensor "range"
-    this.raySpread = Math.PI; // 45deg
+    this.raySpread = Math.PI; // 180deg
     this.rays = [];
     this.readings = []; // readings from sensors
   }

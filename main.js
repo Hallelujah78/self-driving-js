@@ -9,23 +9,8 @@ const networkCtx = networkCanvas.getContext("2d");
 
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
-// Add another car
-const traffic = [
-  new Car(road.getLaneCenter(1), -100, 30, 50, "DUMMY", 2, "red"),
-  new Car(road.getLaneCenter(0), -300, 30, 50, "DUMMY", 2, "green"),
-  new Car(road.getLaneCenter(1), -450, 30, 50, "DUMMY", 2, "red"),
-  new Car(road.getLaneCenter(2), -600, 30, 50, "DUMMY", 2, "purple"),
-  new Car(road.getLaneCenter(1), -750, 30, 50, "DUMMY", 2, "red"),
-  new Car(road.getLaneCenter(0), -900, 30, 50, "DUMMY", 2, "green"),
-  new Car(road.getLaneCenter(1), -1050, 30, 50, "DUMMY", 2, "red"),
-  new Car(road.getLaneCenter(2), -1150, 30, 50, "DUMMY", 2, "purple"),
-  new Car(road.getLaneCenter(2), -1300, 30, 50, "DUMMY", 2, "red"),
-  new Car(road.getLaneCenter(1), -1450, 30, 50, "DUMMY", 2, "green"),
-  new Car(road.getLaneCenter(0), -1590, 30, 50, "DUMMY", 2, "red"),
-  new Car(road.getLaneCenter(1), -1740, 30, 50, "DUMMY", 2, "purple"),
-  new Car(road.getLaneCenter(1), -2000, 30, 50, "DUMMY", 2, "purple"),
-  new Car(road.getLaneCenter(1), -2200, 30, 50, "DUMMY", 2, "purple"),
-];
+const traffic = [];
+generateTraffic(20);
 
 const N = 2000;
 
@@ -34,11 +19,16 @@ const cars = generateCars(N);
 // store best car globally
 let bestCar = cars[0];
 
+// Initialize our cars from local storage if it exists
 if (localStorage.getItem("bestBrain")) {
   // For all cars
   for (let i = 0; i < cars.length; i++) {
+    // Load the best brain from local storage into each car
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
-    NeuralNetwork.mutate(cars[i].brain, 0);
+    // Retain the previous best brain for car at cars[0] - don't mutate it
+    if (i != 0) {
+      NeuralNetwork.mutate(cars[i].brain, 0.3);
+    }
   }
 }
 
@@ -68,6 +58,35 @@ function generateCars(N) {
     cars.push(new Car(road.getLaneCenter(1), 300, 30, 50, "AI", 3, "blue"));
   }
   return cars;
+}
+
+function generateTraffic(N) {
+  const laneIndices = [0, 1, 2];
+  const colors = ["red", "green", "purple", "orange", "brown", "pink"];
+
+  let y = -100;
+  const spacing = 170; // >150px to be safe
+
+  for (let i = 0; i < N; i++) {
+    // Decide how many lanes to block this "row" (1 or 2)
+    const lanesToBlock = Math.random() < 0.5 ? 1 : 2;
+
+    // Shuffle lanes and take the first N
+    const shuffledLanes = laneIndices
+      .slice()
+      .sort(() => Math.random() - 0.5)
+      .slice(0, lanesToBlock);
+
+    for (const lane of shuffledLanes) {
+      const color = colors[Math.floor(Math.random() * colors.length)];
+
+      traffic.push(
+        new Car(road.getLaneCenter(lane), y, 30, 50, "DUMMY", 2, color),
+      );
+    }
+
+    y -= spacing;
+  }
 }
 
 /**

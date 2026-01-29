@@ -97,3 +97,8 @@ Canvas says: “Also… Y is upside down.” 😄
 - I added more neurons in the hidden layer - 20 up from 6
 - This seems to have fixed obstacle detection and avoidance - it could avoid the 14th car.
 - This simple FNN with discrete neurons can't really learn to 'drive' but it can avoid obstacles now!
+
+# Next Steps
+
+- generate random traffic
+  - not trivial to do well, time-consuming but doable
